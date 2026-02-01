@@ -107,6 +107,7 @@ export class SnakeGameEngine {
       return;
     }
     this.state.direction = direction;
+    this.notifyStateChange();
   }
 
   private update(): void {

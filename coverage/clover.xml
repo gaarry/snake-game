@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1769970318921" clover="3.2.0">
+  <project timestamp="1769970318921" name="All files">
+    <metrics statements="79" coveredstatements="48" conditionals="42" coveredconditionals="13" methods="21" coveredmethods="14" elements="142" coveredelements="75" complexity="0" loc="79" ncloc="79" packages="1" files="3" classes="3"/>
+    <file name="GameEngine.ts" path="/Users/gary/git/snake-game/common/game-engine/GameEngine.ts">
+      <metrics statements="73" coveredstatements="44" conditionals="41" coveredconditionals="13" methods="20" coveredmethods="14"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="6" count="25" type="stmt"/>
+      <line num="7" count="25" type="stmt"/>
+      <line num="10" count="25" type="stmt"/>
+      <line num="11" count="25" type="stmt"/>
+      <line num="15" count="26" type="stmt"/>
+      <line num="16" count="26" type="stmt"/>
+      <line num="17" count="26" type="stmt"/>
+      <line num="30" count="26" type="stmt"/>
+      <line num="32" count="26" type="stmt"/>
+      <line num="34" count="26" type="stmt"/>
+      <line num="35" count="26" type="stmt"/>
+      <line num="41" count="26" type="stmt"/>
+      <line num="45" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="50" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="56" count="0" type="stmt"/>
+      <line num="60" count="0" type="stmt"/>
+      <line num="61" count="0" type="stmt"/>
+      <line num="65" count="1" type="stmt"/>
+      <line num="69" count="13" type="stmt"/>
+      <line num="73" count="23" type="stmt"/>
+      <line num="77" count="4" type="cond" truecount="1" falsecount="1"/>
+      <line num="78" count="0" type="stmt"/>
+      <line num="80" count="4" type="stmt"/>
+      <line num="81" count="4" type="stmt"/>
+      <line num="83" count="4" type="cond" truecount="1" falsecount="1"/>
+      <line num="84" count="0" type="stmt"/>
+      <line num="86" count="4" type="stmt"/>
+      <line num="90" count="2" type="stmt"/>
+      <line num="91" count="2" type="stmt"/>
+      <line num="92" count="2" type="cond" truecount="1" falsecount="1"/>
+      <line num="93" count="2" type="stmt"/>
+      <line num="94" count="2" type="stmt"/>
+      <line num="99" count="1" type="cond" truecount="3" falsecount="1"/>
+      <line num="100" count="1" type="stmt"/>
+      <line num="101" count="1" type="stmt"/>
+      <line num="102" count="1" type="stmt"/>
+      <line num="106" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="107" count="1" type="stmt"/>
+      <line num="109" count="5" type="stmt"/>
+      <line num="110" count="5" type="stmt"/>
+      <line num="114" count="0" type="cond" truecount="0" falsecount="4"/>
+      <line num="116" count="0" type="stmt"/>
+      <line num="117" count="0" type="stmt"/>
+      <line num="122" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="123" count="0" type="stmt"/>
+      <line num="124" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="125" count="0" type="stmt"/>
+      <line num="127" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="128" count="0" type="stmt"/>
+      <line num="129" count="0" type="stmt"/>
+      <line num="131" count="0" type="stmt"/>
+      <line num="132" count="0" type="stmt"/>
+      <line num="135" count="0" type="stmt"/>
+      <line num="138" count="0" type="cond" truecount="0" falsecount="4"/>
+      <line num="139" count="0" type="stmt"/>
+      <line num="141" count="0" type="stmt"/>
+      <line num="144" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="145" count="0" type="stmt"/>
+      <line num="146" count="0" type="stmt"/>
+      <line num="149" count="0" type="stmt"/>
+      <line num="151" count="0" type="stmt"/>
+      <line num="154" count="0" type="stmt"/>
+      <line num="155" count="0" type="stmt"/>
+      <line num="159" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="160" count="1" type="stmt"/>
+      <line num="161" count="1" type="stmt"/>
+      <line num="163" count="1" type="stmt"/>
+      <line num="164" count="1" type="stmt"/>
+      <line num="168" count="11" type="cond" truecount="2" falsecount="0"/>
+      <line num="169" count="1" type="stmt"/>
+      <line num="170" count="1" type="stmt"/>
+    </file>
+    <file name="index.ts" path="/Users/gary/git/snake-game/common/game-engine/index.ts">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+    </file>
+    <file name="types.ts" path="/Users/gary/git/snake-game/common/game-engine/types.ts">
+      <metrics statements="4" coveredstatements="2" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="29" count="1" type="cond" truecount="0" falsecount="1"/>
+      <line num="30" count="0" type="stmt"/>
+      <line num="31" count="0" type="stmt"/>
+    </file>
+  </project>
+</coverage>
