@@ -40,8 +40,8 @@ export default function App() {
   // Calculate board size
   useEffect(() => {
     const updateSize = () => {
-      const maxWidth = Math.min(window.innerWidth - 40, 500);
-      const maxHeight = Math.min(window.innerHeight - 500, 500);
+      const maxWidth = Math.min(window.innerWidth - 40, 450);
+      const maxHeight = Math.min(window.innerHeight - 500, 450);
       const size = Math.min(maxWidth, maxHeight);
       setBoardSize({
         width: size,
@@ -52,39 +52,6 @@ export default function App() {
     updateSize();
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, []);
-
-  // Custom cursor (desktop only)
-  useEffect(() => {
-    const isTouch = 'ontouchstart' in window;
-    if (isTouch) return;
-
-    const cursor = document.createElement('div');
-    cursor.className = 'cursor';
-    document.body.appendChild(cursor);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      if ((e.target as HTMLElement).tagName === 'BUTTON' || 
-          (e.target as HTMLElement).closest('button')) {
-        cursor.classList.add('hover');
-      } else {
-        cursor.classList.remove('hover');
-      }
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseover', handleMouseOver);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseover', handleMouseOver);
-      cursor.remove();
-    };
   }, []);
 
   // Touch swipe controls
@@ -100,7 +67,7 @@ export default function App() {
     const touch = e.touches[0];
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
-    const minSwipe = 30;
+    const minSwipe = 40;
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       if (deltaX > minSwipe) {
@@ -147,7 +114,7 @@ export default function App() {
   }, [gameMode, gameState]);
 
   // Create particles
-  const createParticles = useCallback((x: number, y: number, color: string, count: number = 8) => {
+  const createParticles = useCallback((x: number, y: number, color: string, count: number = 12) => {
     const newParticles = Array.from({ length: count }, () => ({
       id: particleIdRef.current++,
       x: x * CELL_SIZE + CELL_SIZE / 2,
@@ -164,7 +131,7 @@ export default function App() {
   // Handle eat food
   const handleEatFood = useCallback(() => {
     if (gameState && gameState.food) {
-      createParticles(gameState.food.x, gameState.food.y, '#ff00ff', 10);
+      createParticles(gameState.food.x, gameState.food.y, '#ff00ff', 12);
     }
   }, [gameState, createParticles]);
 
@@ -257,15 +224,16 @@ export default function App() {
     <>
       {/* Background Effects */}
       <div className="background-effects">
-        <div className="grid-bg"></div>
-        <div className="scanlines"></div>
-        <div className="vignette"></div>
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+        <div className="grid-pattern"></div>
       </div>
 
       <div className="game-container" ref={containerRef}>
         <div className="header">
-          <h1 className="title">🐍 SNAKE</h1>
-          <p className="title-subtitle">NEO ARCADE</p>
+          <h1 className="title">SNAKE</h1>
+          <p className="title-subtitle">Neo Arcade</p>
         </div>
 
         {/* Game Mode Selector */}
@@ -296,10 +264,13 @@ export default function App() {
           {gameMode === 'time-attack' && (
             <div className="score-panel">
               <div className="score-label">Time</div>
-              <div className="score-value" style={{ 
-                color: timeLeft <= 10 ? 'var(--neon-pink)' : 'var(--neon-cyan)',
-                textShadow: timeLeft <= 10 ? '0 0 20px var(--neon-pink)' : '0 0 10px var(--neon-cyan)'
-              }}>
+              <div 
+                className="score-value" 
+                style={{ 
+                  color: timeLeft <= 10 ? 'var(--neon-pink)' : 'var(--neon-cyan)',
+                  textShadow: timeLeft <= 10 ? '0 0 20px var(--neon-pink)' : '0 0 15px var(--neon-cyan)'
+                }}
+              >
                 {timeLeft}s
               </div>
             </div>
@@ -310,8 +281,8 @@ export default function App() {
           <div
             className="game-board"
             style={{
-              width: boardSize.width,
-              height: boardSize.height,
+              width: boardSize.width + 40,
+              height: boardSize.height + 40,
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -326,7 +297,7 @@ export default function App() {
                 margin: '0 auto',
               }}
             >
-              {/* Grid background */}
+              {/* Grid lines */}
               <svg
                 style={{
                   position: 'absolute',
@@ -334,12 +305,12 @@ export default function App() {
                   left: 0,
                   width: '100%',
                   height: '100%',
-                  opacity: 0.15,
+                  opacity: 0.1,
                 }}
               >
                 <defs>
                   <pattern
-                    id="grid-neon"
+                    id="grid-lines"
                     width={CELL_SIZE}
                     height={CELL_SIZE}
                     patternUnits="userSpaceOnUse"
@@ -352,7 +323,7 @@ export default function App() {
                     />
                   </pattern>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#grid-neon)" />
+                <rect width="100%" height="100%" fill="url(#grid-lines)" />
               </svg>
 
               {/* Food */}
@@ -386,12 +357,12 @@ export default function App() {
                   key={particle.id}
                   className="particle"
                   style={{
-                    left: particle.x - 4,
-                    top: particle.y - 4,
-                    width: 8,
-                    height: 8,
+                    left: particle.x - 6,
+                    top: particle.y - 6,
+                    width: 12,
+                    height: 12,
                     background: particle.color,
-                    boxShadow: `0 0 10px ${particle.color}, 0 0 20px ${particle.color}`,
+                    boxShadow: `0 0 15px ${particle.color}, 0 0 30px ${particle.color}`,
                   }}
                 />
               ))}
@@ -404,7 +375,7 @@ export default function App() {
                     <p className="new-high-score">★ NEW HIGH SCORE ★</p>
                   )}
                   <p className="final-score">SCORE: {gameState.score}</p>
-                  <p style={{ color: '#8888aa', fontSize: '0.8rem', marginTop: '10px' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '10px' }}>
                     Tap to restart
                   </p>
                 </div>
@@ -414,7 +385,7 @@ export default function App() {
               {gameState.isPaused && !gameState.isGameOver && (
                 <div className="paused-overlay">
                   <h2 className="paused-title">PAUSED</h2>
-                  <p style={{ color: '#8888aa', fontSize: '0.8rem' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                     Tap to resume
                   </p>
                 </div>
@@ -430,7 +401,7 @@ export default function App() {
           </div>
           <div className="dpad-row">
             <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: -1, y: 0 })}>←</button>
-            <button className="dpad-btn dpad-center"></button>
+            <div className="dpad-center"></div>
             <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: 1, y: 0 })}>→</button>
           </div>
           <div className="dpad-row">
@@ -442,7 +413,7 @@ export default function App() {
           <p className="controls-hint">
             [ ↑ ↓ ← → ] or [ W A S D ] to move • [ SPACE ] to pause
           </p>
-          <p className="controls-hint mobile-hint">
+          <p className="mobile-hint">
             Swipe or use D-pad to move on mobile
           </p>
           <div className="game-buttons">
