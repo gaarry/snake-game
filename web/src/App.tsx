@@ -22,6 +22,7 @@ export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [boardSize, setBoardSize] = useState({ width: 0, height: 0 });
   const particleIdRef = useRef(0);
+  const touchStartRef = useRef<{x: number; y: number} | null>(null);
 
   // Initialize engine
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function App() {
   useEffect(() => {
     const updateSize = () => {
       const maxWidth = Math.min(window.innerWidth - 40, 500);
-      const maxHeight = Math.min(window.innerHeight - 400, 500);
+      const maxHeight = Math.min(window.innerHeight - 500, 500);
       const size = Math.min(maxWidth, maxHeight);
       setBoardSize({
         width: size,
@@ -53,8 +54,11 @@ export default function App() {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  // Custom cursor
+  // Custom cursor (desktop only)
   useEffect(() => {
+    const isTouch = 'ontouchstart' in window;
+    if (isTouch) return;
+
     const cursor = document.createElement('div');
     cursor.className = 'cursor';
     document.body.appendChild(cursor);
@@ -83,6 +87,40 @@ export default function App() {
     };
   }, []);
 
+  // Touch swipe controls
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current || !engineRef.current) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    const minSwipe = 30;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > minSwipe) {
+        engineRef.current.setDirection({ x: 1, y: 0 });
+      } else if (deltaX < -minSwipe) {
+        engineRef.current.setDirection({ x: -1, y: 0 });
+      }
+    } else {
+      if (deltaY > minSwipe) {
+        engineRef.current.setDirection({ x: 0, y: 1 });
+      } else if (deltaY < -minSwipe) {
+        engineRef.current.setDirection({ x: 0, y: -1 });
+      }
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    touchStartRef.current = null;
+  }, []);
+
   // Time attack timer
   useEffect(() => {
     if (gameMode !== 'time-attack' || !gameState) return;
@@ -92,7 +130,6 @@ export default function App() {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          // Time's up - end game
           if (engineRef.current) {
             const currentState = engineRef.current.getState();
             if (!currentState.isGameOver) {
@@ -124,7 +161,7 @@ export default function App() {
     }, 800);
   }, []);
 
-  // Modified update function for particles
+  // Handle eat food
   const handleEatFood = useCallback(() => {
     if (gameState && gameState.food) {
       createParticles(gameState.food.x, gameState.food.y, '#ff00ff', 10);
@@ -276,6 +313,9 @@ export default function App() {
               width: boardSize.width,
               height: boardSize.height,
             }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <div
               className="grid"
@@ -365,7 +405,7 @@ export default function App() {
                   )}
                   <p className="final-score">SCORE: {gameState.score}</p>
                   <p style={{ color: '#8888aa', fontSize: '0.8rem', marginTop: '10px' }}>
-                    Press SPACE to restart
+                    Tap to restart
                   </p>
                 </div>
               )}
@@ -375,7 +415,7 @@ export default function App() {
                 <div className="paused-overlay">
                   <h2 className="paused-title">PAUSED</h2>
                   <p style={{ color: '#8888aa', fontSize: '0.8rem' }}>
-                    Press SPACE to resume
+                    Tap to resume
                   </p>
                 </div>
               )}
@@ -383,9 +423,27 @@ export default function App() {
           </div>
         </div>
 
+        {/* Virtual D-Pad for Mobile */}
+        <div className="dpad">
+          <div className="dpad-row">
+            <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: 0, y: -1 })}>↑</button>
+          </div>
+          <div className="dpad-row">
+            <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: -1, y: 0 })}>←</button>
+            <button className="dpad-btn dpad-center"></button>
+            <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: 1, y: 0 })}>→</button>
+          </div>
+          <div className="dpad-row">
+            <button className="dpad-btn" onClick={() => engineRef.current?.setDirection({ x: 0, y: 1 })}>↓</button>
+          </div>
+        </div>
+
         <div className="controls">
           <p className="controls-hint">
             [ ↑ ↓ ← → ] or [ W A S D ] to move • [ SPACE ] to pause
+          </p>
+          <p className="controls-hint mobile-hint">
+            Swipe or use D-pad to move on mobile
           </p>
           <div className="game-buttons">
             <button
