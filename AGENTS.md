@@ -125,6 +125,10 @@ browser action=screenshot target=host targetId=<tab-id>
 
 ## Anti-Patterns to Avoid
 
+**❌ DON'T run time-consuming tasks in main session**
+- Always use `sessions_spawn` with `runtime="subagent"` for tasks taking >30s
+- Main session should never wait for long tasks (blocks user, no progress visibility)
+
 **❌ DON'T just check HTTP 200**
 - Server returns 200 ≠ JavaScript runs correctly
 
@@ -293,6 +297,64 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+---
+
+## 📝 Blog Deployment Verification Workflow
+
+**Rule: NEVER report deployment success until you've verified the articles are live!**
+
+### Blog Deployment Checklist
+
+After pushing to GitHub:
+
+1. **Push Complete** → Send: "✅ 已推送到 GitHub，等待 Vercel 构建..."
+
+2. **Wait 2-3 minutes** → Vercel typically builds in 1-3 minutes
+
+3. **Verify Each Article** → Check HTTP status for each new article:
+   ```bash
+   curl -s -o /dev/null -w "%{http_code}" "https://ai-blog.gary-yao.com/posts/<slug>/"
+   ```
+   - **200** = ✅ 部署成功
+   - **404** = ⏳ 还在构建中
+   - **Other** = ⚠️ 需要排查
+
+4. **Retry if needed** → If 404, wait 1-2 minutes and retry (up to 3 times)
+
+5. **Final Report** → Only after all articles return 200:
+   ```
+   ✅ 部署成功！所有文章已上线：
+   - [文章1](链接)
+   - [文章2](链接)
+   ...
+   ```
+
+### Example Workflow
+```
+🔍 开始执行定时任务...
+✅ 任务1完成，文章已创建
+✅ 任务2完成，文章已创建
+...
+✅ 所有文章已推送到 GitHub (commit: xxx)
+⏳ 等待 Vercel 构建 (2-3分钟)...
+🔍 检查部署状态...
+✅ https://ai-blog.gary-yao.com/posts/article-1/ → 200
+✅ https://ai-blog.gary-yao.com/posts/article-2/ → 200
+...
+✅ 部署成功！所有 X 篇文章已上线
+```
+
+### Anti-Patterns to Avoid
+
+**❌ DON'T report success immediately after git push**
+- GitHub push ≠ Vercel deployment
+
+**❌ DON'T assume "no errors = success"**
+- Build may have succeeded but article URLs may still return 404
+
+**❌ DON'T skip the curl verification step**
+- Manual browser check is acceptable but slower
 
 ---
 
