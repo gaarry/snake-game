@@ -170,11 +170,52 @@ mcporter call MiniMax.understand_image prompt="描述图片" image_source="/path
 - MiniMax API 调用时需要显式传 `stream: true` 参数（通过 `agents.defaults.models["minimax-cn/MiniMax-M2.7"].params.stream: true` 配置）
 - stdio 模式冷启动较慢，建议 timeout 设为 60s
 
+## Web 访问工具箱（2026-03 实测）
+
+当网站访问失败时，**按顺序尝试以下方式**：
+
+### 1. Jina Reader（通用首选）
+```bash
+curl -s "https://r.jina.ai/https://目标URL" -H "Accept: text/markdown" -H "X-Timeout: 15"
+```
+覆盖绝大多数网站，包括 Wikipedia、Wikipedia 等。
+
+### 2. xreach（Twitter/X）
+```bash
+xreach tweet "URL" --auth-token "xxx" --ct0 "xxx" --json
+# Cookie 配置在 ~/.agent-reach/config.yaml
+```
+需要 Twitter Cookie，agent-reach configure 后可用。
+
+### 3. yt-dlp（YouTube）
+```bash
+yt-dlp --dump-json "视频URL"
+```
+YouTube 视频信息和字幕提取。
+
+### 4. nitter.net（Twitter 备选，无需登录）
+```
+https://nitter.net/用户名/status/推文ID
+```
+免费开源镜像，稳定性一般。
+
+### 5. syndication.twitter.com（Twitter 备选）
+```bash
+curl -s "https://syndication.twitter.com/srv/timeline-profile/screen-name/用户名"
+```
+只获取公开部分，不需要登录。
+
+### 注意事项
+- **web_fetch** 当前几乎所有网站都返回 blocked，优先用 Jina
+- **agent-reach** 覆盖：Twitter、YouTube、Reddit（全网搜索）、Bilibili、GitHub 等
+- **Jina Reader** 覆盖：其他任意网站
+- Twitter Cookie 有封号风险，建议用小号
+
 ## Current Limitations (2026-03)
 
 ### Web Access
 - **Brave Search API**: Not configured ❌
-- **Web fetch**: Not available ❌
+- **Web fetch**: 受限，优先用 Jina Reader 替代
 - **Browser automation**: Not available ❌
 
 The scheduled reminder tasks (Twitter trending, AI tools, market analysis) are running but returning placeholder/generic content because there's no web search capability. User was asked to configure Brave Search API but it hasn't been done yet.
