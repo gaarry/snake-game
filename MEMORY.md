@@ -182,10 +182,11 @@ curl -s "https://r.jina.ai/https://目标URL" -H "Accept: text/markdown" -H "X-T
 
 ### 2. xreach（Twitter/X）
 ```bash
-xreach tweet "URL" --auth-token "xxx" --ct0 "xxx" --json
-# Cookie 配置在 ~/.agent-reach/config.yaml
+xreach tweet "URL" --json
 ```
-需要 Twitter Cookie，agent-reach configure 后可用。
+**Session 存储位置**：`~/.config/xfetch/session.json`（JSON 格式，`{"authToken": "...", "ct0": "..."}`）
+- Cookie 配置：`agent-reach configure twitter-cookies "..."` 会写到这里
+- xreach CLI 自动读取此文件，无需每次传参
 
 ### 3. yt-dlp（YouTube）
 ```bash
@@ -234,3 +235,9 @@ The scheduled reminder tasks (Twitter trending, AI tools, market analysis) are r
   - 前端 → Vercel API (/api/generate, /api/identify) → 阿里云
   - 解决了直接调用阿里云CORS报错问题
 - **Files**: api/generate.ts, api/identify.ts
+
+### xreach Twitter Session 修复 (2026-03-22)
+- **Problem**: agent-reach configure 写 Cookie 到 ~/.agent-reach/config.yaml，但 xreach CLI 不读这个文件
+- **Investigation**: 源码发现 xreach 用 `~/.config/xfetch/session.json`
+- **Solution**: 手动创建 `~/.config/xfetch/session.json`，格式 `{"authToken": "...", "ct0": "..."}`
+- **Note**: xreach 和 agent-reach 用不同的 session 文件

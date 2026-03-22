@@ -1,0 +1,15 @@
+{
+  "lastChecks": {
+    "email": null,
+    "calendar": null,
+    "weather": null
+  },
+  "lastMemoryMaintenance": "2026-03-22",
+  "lastHeartbeat": "2026-03-22T12:16:00",
+  "blogStatus": {
+    "localLatest": "2026-03-22",
+    "deployedLatest": "2026-03-14",
+    "status": "⚠️ GitHub推送成功，但Vercel部署失败（Actions持续报错）",
+    "urlPattern": "Chinese slug (title-based)"
+  }
+}
