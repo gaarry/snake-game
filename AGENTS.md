@@ -1,5 +1,11 @@
 # AGENTS.md - Your Workspace
 
+**⚠️ 铁律：所有耗时任务必须立即 spawn subagent 执行，禁止阻塞主线程。⚠️**
+
+判断标准：任何需要等待外部响应（网络、API）或预计超过 5 秒的操作 → spawn subagent
+
+---
+
 This folder is home. Treat it that way.
 
 ## First Run
@@ -13,6 +19,7 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+5. **Remember**: xixi wants you to actively remember what he says in conversations. Write important things to memory files in real-time.
 
 Don't ask permission. Just do it.
 
@@ -155,6 +162,46 @@ Always verify in the browser. The browser is the final truth!
 - OpenClaw gateway is a separate system service
 - **Before executing `openclaw gateway restart`, you MUST ask for permission**
 - For website issues, use other debugging methods first (curl, process logs, browser console)
+
+## Obsidian Sync Rules (MANDATORY)
+
+**每次文档操作后必须完成三件事：**
+
+1. **写本地** → `~/Documents/Obsidian/AI-Learning/`
+2. **同步 iCloud** → `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/AI-Learning/`
+3. **推送 GitHub** → `cd ~/Documents/Obsidian/AI-Learning && git add && git commit && git push`
+
+**Double Check 流程（必须用 subagent）：**
+
+任何涉及文件创建、修改、同步的操作，都必须用 subagent 进行二次确认：
+```
+1. 主 session 执行实际操作
+2. spawn subagent 做 double check：
+   - 检查本地文件是否存在
+   - 检查 iCloud 是否同步
+   - 检查 GitHub 是否推送成功（验证 commit 存在）
+3. 如有任一项失败，subagent 立即补救并通知
+```
+
+**Subagent double check 模板：**
+```bash
+# 1. 检查本地
+ls ~/Documents/Obsidian/AI-Learning/[目录]/[文件]
+
+# 2. 检查 iCloud  
+ls "/Users/gary/Library/Mobile Documents/iCloud~md~obsidian/Documents/AI-Learning/[目录]/[文件]"
+
+# 3. 检查 GitHub commit
+cd ~/Documents/Obsidian/AI-Learning
+git log --oneline -1
+
+# 4. 如有问题，cp 到 iCloud，git push 到 GitHub
+```
+
+**常见错误预防：**
+- subagent 可能说"已同步"但实际没做 → 必须独立验证
+- iCloud 有延迟 → 写完本地后立即 cp 过去
+- Git rebase conflict → 优先用 `--force` push
 
 ## External vs Internal
 
